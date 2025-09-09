@@ -4,7 +4,13 @@
 #include "Player/AuraPlayerController.h"
 #include "EnhancedInputSubsystems.h"
 #include "EnhancedInputComponent.h"
+#include "Character/AuraCharacter.h"
+#include "Character/Component/AuraCharacterMovementComponent.h"
+#include "GameFramework/Character.h"
 #include "Interface/IEnemyInterface.h"
+#include "Player/AuraPlayerState.h"
+#include "UI/HUD/AuraHUD.h"
+#include "UI/WidgetController/AuraWidgetController.h"
 
 AAuraPlayerController::AAuraPlayerController()
 {
@@ -83,8 +89,10 @@ void AAuraPlayerController::BeginPlay()
 	
 	UEnhancedInputLocalPlayerSubsystem* Subsystem =
 		ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer());
-	check(Subsystem);
-	Subsystem->AddMappingContext(AuraContext, 0);
+	if (Subsystem)
+	{
+		Subsystem->AddMappingContext(AuraContext, 0);
+	}
 	
 	bShowMouseCursor = true;
 	DefaultMouseCursor = EMouseCursor::Default;
@@ -93,6 +101,14 @@ void AAuraPlayerController::BeginPlay()
 	InputMode.SetLockMouseToViewportBehavior(EMouseLockMode::DoNotLock);
 	InputMode.SetHideCursorDuringCapture(false);
 	SetInputMode(InputMode);
+
+
+}
+
+void AAuraPlayerController::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+	
 }
 
 void AAuraPlayerController::SetupInputComponent()
@@ -101,6 +117,7 @@ void AAuraPlayerController::SetupInputComponent()
 	// AActor는 InputComponent를 가지고 있다.
 	UEnhancedInputComponent* EnhancedInputComponent = CastChecked<UEnhancedInputComponent>(InputComponent);
 	EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &AAuraPlayerController::Move);
+	EnhancedInputComponent->BindAction(DashAction, ETriggerEvent::Started, this, &AAuraPlayerController::Dash);
 }
 
 void AAuraPlayerController::Move(const FInputActionValue& InputActionValue)
@@ -116,5 +133,15 @@ void AAuraPlayerController::Move(const FInputActionValue& InputActionValue)
 	{
 		ControlledPawn->AddMovementInput(ForwardDirection, InputAxisVector.Y);
 		ControlledPawn->AddMovementInput(RightDirection, InputAxisVector.X);
+	}
+}
+
+void AAuraPlayerController::Dash(const FInputActionValue& InputActionValue)
+{
+	if (AAuraCharacter* ControlledPawn = Cast<AAuraCharacter>(GetPawn()); IsValid(ControlledPawn))
+	{
+		UAuraCharacterMovementComponent* MovementComp = Cast<UAuraCharacterMovementComponent>(ControlledPawn->GetCharacterMovement());
+		check(IsValid(MovementComp));
+		MovementComp->StartDash();
 	}
 }

@@ -7,6 +7,7 @@
 #include "Interface/IEnemyInterface.h"
 #include "AuraPlayerController.generated.h"
 
+class UAuraWidgetController;
 struct FInputActionValue;
 class UInputMappingContext;
 class UInputAction;
@@ -24,6 +25,7 @@ public:
 	
 protected:
 	virtual void BeginPlay() override;
+	virtual void Tick(float DeltaTime) override;
 	virtual void SetupInputComponent() override;
 
 private:
@@ -33,8 +35,14 @@ private:
 	UPROPERTY(EditDefaultsOnly, meta = (AllowPrivateAccess), Category = "InputMapping")
 	TObjectPtr<UInputAction> MoveAction;
 
+	UPROPERTY(EditDefaultsOnly, meta = (AllowPrivateAccess), Category = "InputMapping")
+	TObjectPtr<UInputAction> DashAction;
+
 	UFUNCTION()
 	void Move(const FInputActionValue& InputActionValue);
+
+	UFUNCTION()
+	void Dash(const FInputActionValue& InputActionValue);
 
 	TScriptInterface<IIEnemyInterface> LastActor;
 	TScriptInterface<IIEnemyInterface> ThisActor;

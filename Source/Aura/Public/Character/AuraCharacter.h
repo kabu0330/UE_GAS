@@ -6,13 +6,16 @@
 #include "AuraCharacterBase.h"
 #include "AuraCharacter.generated.h"
 
+
 UCLASS()
 class AURA_API AAuraCharacter : public AAuraCharacterBase
 {
 	GENERATED_BODY()
 
 public:
-	AAuraCharacter();
+	//AAuraCharacter();
+	AAuraCharacter(const FObjectInitializer& ObjectInitializer);
+	
 	virtual void PossessedBy(AController* NewController) override;
 	virtual void OnRep_PlayerState() override;
 	
@@ -24,4 +27,6 @@ public:
 	virtual void Tick(float DeltaTime) override;
 	
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+
+private:
 };
