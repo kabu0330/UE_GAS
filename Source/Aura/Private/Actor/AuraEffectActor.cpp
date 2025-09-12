@@ -34,7 +34,7 @@ void AAuraEffectActor::ApplyEffectToTarget(AActor* TargetActor, TSubclassOf<UGam
 	// 2. Gameplay Effect 클래스를 기반으로 실제 적용될 인스턴스(이펙트 스펙) 생성
 	// GE 클래스보다 가벼운 Spec 객체를 네트워크 복제에 사용하기 위해 이러한 중간 과정이 생겨남
 	const FGameplayEffectSpecHandle EffectSpecHandle =
-		TargetASC->MakeOutgoingSpec(GamePlayEffectClass, 1.f, EffectContextHandle);
+		TargetASC->MakeOutgoingSpec(GamePlayEffectClass, ActorLevel, EffectContextHandle);
 
 	// 3. 이펙트 스펙을 TargetASC에 적용
 	FActiveGameplayEffectHandle ActiveEffectHandle = TargetASC->ApplyGameplayEffectSpecToSelf(*EffectSpecHandle.Data.Get());
